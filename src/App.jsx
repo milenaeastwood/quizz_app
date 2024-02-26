@@ -1,9 +1,12 @@
+import Quiz from "./components/Quiz.jsx";
+
 function App() {
 
-
+  
   return (
     <>
-      <h1>Quizz App</h1>
+      <h1>Quizzz</h1>
+      <Quiz />
     </>
   )
 }
