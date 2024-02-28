@@ -31,8 +31,23 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3.5em;
   line-height: 1.1;
+  color: #444cdb;
+}
+
+.questionBlock {
+  display: block;
+  color: #3b43de;
+  font-size: 1.5em;
+  font-weight: 700;
+  padding: 1.5em;
+  margin: 0.5em auto 2rem auto;
+  max-width: 30rem;
+  border-radius: 8px;
+  border: 3px solid #7b81fb;
+  background-color: #bbbffc62;
+
 }
 
 button {
@@ -47,11 +62,30 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border: 3px solid #646cff;
+  background-color: #b8bbf9;
+  color: white;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.answerBtn {
+  width: 35em;
+  padding: 1.5em;
+  margin: 0.4em;
+  background-color: #b8bbf9;
+  color: #3b43de;
+}
+
+.nextBtn {
+  margin-top: 2em;
+  width: 15em;
+  padding: 1.2em;
+  border: 3px solid #7b81fb;
+  color: #3b43de;
+  font-weight: 700;
 }
 
 @media (prefers-color-scheme: light) {

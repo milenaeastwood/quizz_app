@@ -23,13 +23,13 @@ export default function Quiz() {
                 <div>Score</div>
             ) : (
                 <>
-                    <div>{questionsDatabase[currentQuestion].question}</div>
+                    <div className="questionBlock">{questionsDatabase[currentQuestion].question}</div>
                     {questionsDatabase[currentQuestion].answers.map((option, index) => (
                     <div>                    
-                    <button key={index} onClick={() => handleAnswerButtonClick(index)}>{option}</button>
+                    <button className="answerBtn" key={index} onClick={() => handleAnswerButtonClick(index)}>{option}</button>
                     </div>
                     ))}
-                    <button onClick={() => handleNextButtonClick()}>Next question</button>
+                    <button className="nextBtn" onClick={() => handleNextButtonClick()}>Next question</button>
                     </>
                 )}
         </>
