@@ -14,15 +14,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0 auto;
   text-align: center;
@@ -34,6 +25,7 @@ h1 {
   font-size: 3.5em;
   line-height: 1.1;
   color: #444cdb;
+  margin: 0.3em;
 }
 
 .questionBlock {
@@ -42,7 +34,7 @@ h1 {
   font-size: 1.5em;
   font-weight: 700;
   padding: 1.5em;
-  margin: 0.5em auto 2rem auto;
+  margin: 0 auto;
   max-width: 30rem;
   border-radius: 8px;
   border: 3px solid #7b81fb;
@@ -50,41 +42,79 @@ h1 {
 
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.checkAnswer {
+  font-size: 2em;
+  font-weight: 900;
+  margin: 0.3em auto;
 }
+
 button:hover {
   border: 3px solid #646cff;
   background-color: #b8bbf9;
+  font-weight: 700;
   color: white;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  cursor: pointer;
 }
 
 .answerBtn {
+  border-radius: 8px;
   width: 35em;
   padding: 1.5em;
   margin: 0.4em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
   background-color: #b8bbf9;
+  border: 3px solid #b8bbf9;
   color: #3b43de;
 }
 
+.correctAnswer {
+  background-color: #3fc97d;
+  border: 3px solid #2c8856;
+  color: white;
+}
+
+.wrongAnswer {
+  background-color: #e07070;
+  border: 3px solid #b13737;
+  color: white;
+}
+
+.selected {
+  background-color: turquoise;
+  color: white;
+}
+
 .nextBtn {
+  border-radius: 8px;
+  margin: 2em auto 0 auto;
+  width: 15em;
+  padding: 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  border: 3px solid #7b81fb;
+  color: #3b43de;
+  font-weight: 700;
+}
+
+.newQuizBtn {
+  border-radius: 8px;
   margin-top: 2em;
   width: 15em;
   padding: 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
   border: 3px solid #7b81fb;
   color: #3b43de;
+  font-weight: 700;
+}
+
+.scoreSection {
+  color: #3b43de;
+  font-size: 1.8em;
   font-weight: 700;
 }
 

@@ -1,4 +1,4 @@
-import Quiz from "./components/Quiz.jsx";
+import QuizAPI from "./components/Quiz_API.jsx";
 
 function App() {
 
@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <h1>Quizzz</h1>
-      <Quiz />
+      <QuizAPI />
     </>
   )
 }
