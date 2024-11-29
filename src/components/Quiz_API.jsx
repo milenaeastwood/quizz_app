@@ -3,7 +3,7 @@ import he from "he";
 
 export default function QuizAPI() {
 
-    const [questionsDatabase, setQuestionsDatabase] = useState([]);
+    const [questionsDatabase, setQuestionsDatabase] = useState({ decodedResults : []});
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [score, setScore] = useState(0);
@@ -11,14 +11,11 @@ export default function QuizAPI() {
     const [isAnswered, setIsAnswered] = useState(false);
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
 
-    const correctAnswerObj = { "correct_answer": questionsDatabase[currentQuestion]?.correct_answer || "" };
-    const incorrectAnswerObj = { "incorrect_answers": questionsDatabase[currentQuestion]?.incorrect_answers || [] };
-    
-    const mergedAnswers = { answers: [...incorrectAnswerObj.incorrect_answers, correctAnswerObj.correct_answer] };
-    const allAnswers = mergedAnswers.answers;
+    const correctAnswerObj = { "correct_answer": questionsDatabase.decodedResults[currentQuestion]?.correct_answer || "" };
+    const incorrectAnswerObj = { "incorrect_answers": questionsDatabase.decodedResults[currentQuestion]?.incorrect_answers || [] };
 
-    const shuffle = (arr) => {[...arr].sort(() => Math.random() - 0.5)};
-    const shuffledAnswers = shuffle(allAnswers);
+    const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+    const shuffledAnswers = questionsDatabase.decodedResults.length > 0 ? questionsDatabase.decodedResults[currentQuestion].merged_answers : []
 
     useEffect(() => {
         fetch("https://opentdb.com/api.php?amount=10")
@@ -29,20 +26,24 @@ export default function QuizAPI() {
             .then(parseData => {
                 const decodedResults = parseData.results.map((questions) => ({
                     ...questions,
-                    question: he.decode(questions.question),
+                    category: he.decode(questions.category),
                     question: he.decode(questions.question),
                     incorrect_answers: questions.incorrect_answers.map(he.decode),
-                    correct_answer: he.decode(questions.correct_answer)
+                    correct_answer: he.decode(questions.correct_answer),
+                    merged_answers: shuffle([...questions.incorrect_answers.map(he.decode), he.decode(questions.correct_answer)])
                 }))
-                console.log(decodedResults);
-                setQuestionsDatabase(decodedResults)})
+                console.log('decodedResults', decodedResults);
+                setQuestionsDatabase({ decodedResults })})
             .catch((error) => console.log(error.message))
     }, []);
 
-    const handleAnswerButtonClick = (selectedOptionIndex) => {
+    const handleAnswerButtonClick = (answer) => {
         if (!isAnswered) {
-        const selectedOption = shuffledAnswers.answers[selectedOptionIndex];
-        const correctAnswer = questionsDatabase[currentQuestion].correct_answer;
+        const selectedOptionIndex = shuffledAnswers.indexOf(answer)
+        console.log('handleAnswer',selectedOptionIndex)
+        const selectedOption = answer
+        console.log("selectedOption", selectedOption)
+        const correctAnswer = questionsDatabase.decodedResults[currentQuestion].correct_answer;
         setIsCorrect(selectedOption === correctAnswer);
         selectedOption === correctAnswer && setScore(score + 1);
         setIsAnswered(true);
@@ -52,41 +53,39 @@ export default function QuizAPI() {
 
     const handleNextButtonClick = () => {
         const nextQuestion = currentQuestion + 1;
-        nextQuestion < questionsDatabase.length ? setCurrentQuestion(nextQuestion) : setShowScore(true);
+        nextQuestion < questionsDatabase.decodedResults.length ? setCurrentQuestion(nextQuestion) : setShowScore(true);
         setIsCorrect(null);
         setIsAnswered(false);
         setSelectedOptionIndex(null);
     }
 
     const startNewQuiz = () => {
-        setQuestionsDatabase([]); // Setzen Sie den Frage-Pool zurück
-        setCurrentQuestion(0); // Setzen Sie die aktuelle Frage zurück
-        setShowScore(false); // Setzen Sie den Score-Anzeige-Status zurück
-        setScore(0); // Setzen Sie den Punktestand zurück
+        setQuestionsDatabase({ decodedResults: []}); 
+        setCurrentQuestion(0); 
+        setShowScore(false); 
+        setScore(0); 
         setIsCorrect(null);
         setIsAnswered(false);
         setSelectedOptionIndex(null);
     
-        // Fetchen Sie neue Fragen
-        fetch("https://opentdb.com/api.php?amount=10&type=multiple")
-          .then((response) => {
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
-            return response.json();
-          })
-          .then((parseData) => {
-            const decodedResults = parseData.results.map((question) => ({
-              ...question,
-              category: he.decode(question.category),
-              question: he.decode(question.question),
-              incorrect_answers: question.incorrect_answers.map(he.decode),
-              correct_answer: he.decode(question.correct_answer)
-            }));
-            setQuestionsDatabase(decodedResults);
-          })
-          .catch((error) => console.log(error.message));
+        fetch("https://opentdb.com/api.php?amount=10")
+            .then((response) => {
+                if (!response.ok) throw new Error(`Error: ${response.status}`)
+                return response.json()
+            })
+            .then(parseData => {
+                const decodedResults = parseData.results.map((questions) => ({
+                    ...questions,
+                    category: he.decode(questions.category),
+                    question: he.decode(questions.question),
+                    incorrect_answers: questions.incorrect_answers.map(he.decode),
+                    correct_answer: he.decode(questions.correct_answer),
+                    merged_answers: shuffle([...questions.incorrect_answers.map(he.decode), he.decode(questions.correct_answer)])
+                }))
+                console.log('decodedResults', decodedResults);
+                setQuestionsDatabase({ decodedResults })})
+            .catch((error) => console.log(error.message))
       };
-
-      console.log("isAnswered:", isAnswered);
 
     return (
 
@@ -97,14 +96,14 @@ export default function QuizAPI() {
                     {(score > 2 & score <= 5) && <iframe  className="scorePicture" src="https://giphy.com/embed/Lk023zZqHJ3Zz4rxtV" style={{ margin: '2em' }} width="441" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>}
                     {(score > 5 & score <= 7) && <iframe src="https://giphy.com/embed/n7C5DOuH1m0iA" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>}
                     {(score > 7) && <iframe src="https://giphy.com/embed/yoJC2JaiEMoxIhQhY4" width="480" height="192" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>}                
-                    <div className="scoreSection">You scored {score} out of {questionsDatabase.length} questions!</div>
+                    <div className="scoreSection">You scored {score} out of {questionsDatabase.decodedResults.length} questions!</div>
                     <button className="newQuizBtn" onClick={startNewQuiz}>Retake quizzz</button>
                 </>
             ) : (
                 <>
-                    {questionsDatabase[currentQuestion] && (
-                    <><div className="questionBlock">{questionsDatabase[currentQuestion].question}</div>
-                    <div>Category: {questionsDatabase[currentQuestion].category}</div>
+                    {questionsDatabase.decodedResults[currentQuestion] && (
+                    <><div className="questionBlock">{questionsDatabase.decodedResults[currentQuestion].question}</div>
+                    {/* <div>Category: {questionsDatabase.decodedResults[currentQuestion].category}</div> */}
                     </>
                     )}
                     
@@ -121,8 +120,8 @@ export default function QuizAPI() {
                                 )}
                         </div>
 
-                        {shuffledAnswers.map((option, index) => (
-                        <div key={index}>
+                        {shuffledAnswers.map((option,index) => (
+                        <div key={option}>
                             <button
                             className={`answerBtn ${
                                 isCorrect && option === correctAnswerObj.correct_answer
@@ -138,15 +137,12 @@ export default function QuizAPI() {
                                   : ''
                                 }`}
                             style={{ pointerEvents: isAnswered ? 'none' : 'auto' }}
-                            onClick={() => handleAnswerButtonClick(index)}
+                            onClick={() => handleAnswerButtonClick(option)}
                             >
                             {option}
                             </button>
                         </div>
                         ))}
-
-                        {/* <button>{questionsDatabase[currentQuestion].correct_answer}</button> */}
-
 
                         <button 
                             className="nextBtn" 
@@ -164,18 +160,15 @@ export default function QuizAPI() {
                             <div style={{color: 'white'}}>Placeholder</div>
                         </div>
 
-                        {shuffledAnswers && shuffledAnswers.map((option, index) => (
-                        <div key={index} > 
+                        {shuffledAnswers && shuffledAnswers.map((option) => (
+                        <div key={option} > 
                             <button 
                                 className="answerBtn" 
-                                onClick={() => handleAnswerButtonClick(index)}>
+                                onClick={() => handleAnswerButtonClick(option)}>
                                     {option}
                             </button>
                         </div>
                         ))}
-                        {/* {questionsDatabase[currentQuestion] && questionsDatabase[currentQuestion].correct_answer && (
-                        <button>{questionsDatabase[currentQuestion].correct_answer}</button>
-                        )} */}
                         <button className="nextBtn" onClick={() => handleNextButtonClick()}>Next question</button>
                     </>
                     )

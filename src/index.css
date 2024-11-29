@@ -33,7 +33,7 @@ h1 {
   color: #3b43de;
   font-size: 1.5em;
   font-weight: 700;
-  padding: 1.5em;
+  padding: 1em 1.5em;
   margin: 0 auto;
   max-width: 30rem;
   border-radius: 8px;
@@ -59,7 +59,7 @@ button:hover {
 .answerBtn {
   border-radius: 8px;
   width: 35em;
-  padding: 1.5em;
+  padding: 1.1em;
   margin: 0.4em;
   font-size: 1em;
   font-weight: 500;
@@ -90,7 +90,7 @@ button:hover {
   border-radius: 8px;
   margin: 2em auto 0 auto;
   width: 15em;
-  padding: 1.2em;
+  padding: 1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
